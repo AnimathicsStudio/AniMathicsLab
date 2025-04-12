@@ -57,10 +57,10 @@ fig.add_trace(go.Scatter(
     y=points[:, 1],
     mode="lines",
     line=dict(color="deepskyblue"),
-    name=f"Koch Level {level}"
+    name=f"Koch Level {level}",
 	hoverinfo='skip',
     hovertemplate=None
-))
+    ))
 fig.update_layout(
     width=600,
     height=600,
