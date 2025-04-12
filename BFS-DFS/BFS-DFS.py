@@ -77,7 +77,7 @@ if "use_random" not in st.session_state:
 if "G" not in st.session_state:
     st.session_state.G = build_fixed_graph()
 
-n = st.sidebar.number_input("Jumlah simpul (graf acak)", 5, 20, 10)
+n = st.sidebar.number_input("Order (graf acak)", 5, 20, 10)
 if st.sidebar.button("🎲 Acak Graf Baru"):
     st.session_state.use_random = True
     st.session_state.G = build_random_graph(n)
@@ -87,8 +87,8 @@ elif st.sidebar.button("🔒 Gunakan Graf Tetap"):
 
 G = st.session_state.G
 nodes = list(G.nodes)
-start_node = st.sidebar.selectbox("🟢 Pilih Simpul Awal", nodes)
-method = st.sidebar.radio("🔁 Metode", ["BFS", "DFS"])
+start_node = st.sidebar.selectbox("Pilih Titik Awal", nodes)
+method = st.sidebar.radio("Metode", ["BFS", "DFS"])
 
 # Hasil spanning tree dan urutan kunjungan
 if method == "BFS":
