@@ -64,7 +64,7 @@ fig.update_layout(
     width=600,
     height=600,
     showlegend=False,
-    margin=dict(l=0, r=0, t=30, b=0),
+    margin=dict(l=0, r=0, t=0, b=0),
     title=f"Koch Snowflake Level {level}",
     xaxis=dict(scaleanchor="y", visible=False),
     yaxis=dict(visible=False)
