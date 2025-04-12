@@ -2,7 +2,9 @@ import streamlit as st
 import numpy as np
 import plotly.graph_objects as go
 
-st.title("❄️ Koch Snowflake dengan Zoom Interaktif (Plotly)")
+st.sidebar.header("Pengaturan Fraktal Koch")
+level = st.sidebar.slider("Level Iterasi (0-5)", 0, 5, 0)
+# st.title("❄️ Koch Snowflake dengan Zoom Interaktif (Plotly)")
 
 # --- Fraktal koch_hexagon sama seperti sebelumnya ---
 def rotate(p, angle_rad):
@@ -44,9 +46,6 @@ def koch_hexagon(level):
     points.append(points[0])
     return np.array(points)
 
-# UI
-level = st.slider("Level iterasi (0–4)", 0, 4, 1)
-
 # Data fraktal
 points = koch_hexagon(level)
 
@@ -60,7 +59,7 @@ fig.add_trace(go.Scatter(
     name=f"Koch Level {level}",
 	hoverinfo='skip',
     hovertemplate=None
-    ))
+))
 fig.update_layout(
     width=600,
     height=600,
