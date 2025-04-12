@@ -1,14 +1,12 @@
 import streamlit as st
 import networkx as nx
-from pyvis.network import Network
-import streamlit.components.v1 as components
-import os
+import plotly.graph_objects as go
 
 # --------------------------
 # Konfigurasi halaman
 # --------------------------
 st.set_page_config(page_title="Graf Acak Interaktif", layout="centered")
-st.title("🎲 Graf Interaktif: Drag Node Bebas")
+st.title("🎲 Graf Acak Interaktif dengan Plotly")
 
 # --------------------------
 # Sidebar: Pengaturan Graf
@@ -26,12 +24,11 @@ else:
     G = nx.barabasi_albert_graph(n, m)
 
 # --------------------------
-# Statistik Sederhana
+# Statistik Graf
 # --------------------------
 st.subheader("📊 Statistik Graf")
 st.markdown(f"- Jumlah simpul: **{G.number_of_nodes()}**")
 st.markdown(f"- Jumlah sisi: **{G.number_of_edges()}**")
-
 derajat = [d for _, d in G.degree()]
 st.markdown(f"- Derajat rata-rata: **{sum(derajat)/len(derajat):.2f}**")
 
@@ -41,23 +38,67 @@ else:
     st.markdown(f"- Komponen terhubung: **{nx.number_connected_components(G)}**")
 
 # --------------------------
-# Visualisasi Interaktif
+# Layout & Visualisasi Plotly
 # --------------------------
-st.subheader("📌 Visualisasi Interaktif")
+st.subheader("📌 Visualisasi Graf (Plotly)")
 
-# Buat graf Pyvis dari NetworkX
-net = Network(height="600px", width="100%", notebook=False, directed=False)
-net.from_nx(G)
-net.force_atlas_2based()
+pos = nx.spring_layout(G, seed=42)
 
-# Pastikan direktori /tmp ada
-os.makedirs("/tmp", exist_ok=True)
+# Buat edge trace
+edge_x = []
+edge_y = []
+for u, v in G.edges():
+    x0, y0 = pos[u]
+    x1, y1 = pos[v]
+    edge_x += [x0, x1, None]
+    edge_y += [y0, y1, None]
 
-# Simpan HTML ke path aman
-html_path = "/tmp/graph.html"
-net.write_html(html_path)
+edge_trace = go.Scatter(
+    x=edge_x, y=edge_y,
+    line=dict(width=1, color='#888'),
+    hoverinfo='none',
+    mode='lines'
+)
 
-# Tampilkan HTML di Streamlit
-with open(html_path, 'r', encoding='utf-8') as f:
-    html_content = f.read()
-components.html(html_content, height=620, width=800)
+# Buat node trace
+node_x = []
+node_y = []
+node_text = []
+node_color = []
+
+for node in G.nodes():
+    x, y = pos[node]
+    node_x.append(x)
+    node_y.append(y)
+    deg = G.degree[node]
+    node_text.append(f"Node {node}<br>Derajat: {deg}")
+    node_color.append(deg)
+
+node_trace = go.Scatter(
+    x=node_x, y=node_y,
+    mode='markers+text',
+    hoverinfo='text',
+    marker=dict(
+        showscale=True,
+        colorscale='YlGnBu',
+        color=node_color,
+        size=20,
+        colorbar=dict(title="Derajat"),
+        line_width=2
+    ),
+    text=[str(n) for n in G.nodes()],
+    textposition="top center"
+)
+
+fig = go.Figure(data=[edge_trace, node_trace],
+                layout=go.Layout(
+                    title="Visualisasi Graf Acak",
+                    title_x=0.5,
+                    showlegend=False,
+                    hovermode='closest',
+                    margin=dict(b=20, l=5, r=5, t=40),
+                    xaxis=dict(showgrid=False, zeroline=False),
+                    yaxis=dict(showgrid=False, zeroline=False)
+                ))
+
+st.plotly_chart(fig, use_container_width=True)
