@@ -89,7 +89,7 @@ fig.update_layout(
     title="Simulasi Penyebaran Penyakit (Model SIR)",  # Set Title secara eksplisit
     # xaxis=dict(scaleanchor="y", visible=False),
     # yaxis=dict(visible=False),
-    margin=dict(l=0, r=0, t=30, b=0),
+    margin=dict(l=0, r=0, t=0, b=0),
     dragmode='pan',  # Set default mode to pan
 )
 # Menampilkan grafik di Streamlit dengan konfigurasi yang diatur

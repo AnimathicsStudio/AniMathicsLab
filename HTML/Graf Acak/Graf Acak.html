@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Graf Acak Interaktif</title>
+  <script src="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.js"></script>
+  <style>
+    body {
+      display: flex;
+      margin: 0;
+      font-family: sans-serif;
+    }
+    #sidebar {
+      width: 250px;
+      padding: 1em;
+      background-color: #f5f5f5;
+      border-right: 1px solid #ccc;
+    }
+    #graph-container {
+      flex: 1;
+      padding: 1em;
+    }
+    #mynetwork {
+      width: 100%;
+      height: 600px;
+      border: 1px solid #ddd;
+    }
+    label { display: block; margin-top: 1em; }
+  </style>
+</head>
+<body>
+  <div id="sidebar">
+    <h3>🔧 Pengaturan</h3>
+    <label>Model Graf:
+      <select id="model">
+        <option value="erdos">Erdős–Rényi</option>
+        <option value="barabasi">Barabási–Albert</option>
+      </select>
+    </label>
+
+    <label>Jumlah Simpul:<br>
+      <input type="range" id="nodes" min="5" max="50" value="20">
+      <span id="nodes-val">20</span>
+    </label>
+
+    <label id="param-label">Probabilitas Sisi (p):<br>
+      <input type="range" id="param" min="0" max="1" step="0.01" value="0.2">
+      <span id="param-val">0.2</span>
+    </label>
+
+    <button onclick="generateGraph()">🔁 Generate Graf</button>
+  </div>
+
+  <div id="graph-container">
+    <h3>Graf Acak</h3>
+    <div id="mynetwork"></div>
+  </div>
+
+  <script>
+    const nodesSlider = document.getElementById("nodes");
+    const paramSlider = document.getElementById("param");
+    const nodesVal = document.getElementById("nodes-val");
+    const paramVal = document.getElementById("param-val");
+    const modelSelect = document.getElementById("model");
+    const paramLabel = document.getElementById("param-label");
+
+    nodesSlider.oninput = () => nodesVal.textContent = nodesSlider.value;
+    paramSlider.oninput = () => paramVal.textContent = paramSlider.value;
+
+    modelSelect.onchange = () => {
+      if (modelSelect.value === "erdos") {
+        paramLabel.innerHTML = `Probabilitas Sisi (p):
+          <input type="range" id="param" min="0" max="1" step="0.01" value="0.2">
+          <span id="param-val">0.2</span>`;
+      } else {
+        paramLabel.innerHTML = `Jumlah Sisi per Node (m):<br>
+          <input type="range" id="param" min="1" max="10" value="2">
+          <span id="param-val">2</span>`;
+      }
+      const newSlider = document.getElementById("param");
+      const newLabel = document.getElementById("param-val");
+      newSlider.oninput = () => {
+        newLabel.textContent = newSlider.value;
+      };
+    };
+
+    function subscript(i) {
+      return 'v' + i;
+    }
+
+    function generateBarabasiGraph(n, m) {
+      const nodes = [];
+      const edges = [];
+      const degrees = [];
+
+      for (let i = 0; i < n; i++) {
+        nodes.push({ id: i, label: `v${i + 1}`, shape: "ellipse" });
+        degrees[i] = 0;
+      }
+
+      for (let i = 0; i < m; i++) {
+        for (let j = i + 1; j < m; j++) {
+          edges.push({ from: i, to: j });
+          degrees[i]++;
+          degrees[j]++;
+        }
+      }
+
+      for (let i = m; i < n; i++) {
+        const targets = [];
+        while (targets.length < m) {
+          const rand = Math.floor(Math.random() * i);
+          if (!targets.includes(rand)) {
+            const totalDeg = degrees.slice(0, i).reduce((a, b) => a + b, 0) || 1;
+            const prob = degrees[rand] / totalDeg;
+            if (Math.random() < prob || degrees[rand] === 0) {
+              targets.push(rand);
+            }
+          }
+        }
+        targets.forEach(t => {
+          edges.push({ from: i, to: t });
+          degrees[i]++;
+          degrees[t]++;
+        });
+      }
+
+      return { nodes, edges };
+    }
+
+    function generateGraph() {
+      const n = parseInt(nodesSlider.value);
+      const param = parseFloat(document.getElementById("param").value);
+      let nodes = [], edges = [];
+
+      if (modelSelect.value === "erdos") {
+        for (let i = 0; i < n; i++) nodes.push({ id: i, label: `v${i + 1}`, shape: "ellipse" });
+        for (let i = 0; i < n; i++) {
+          for (let j = i + 1; j < n; j++) {
+            if (Math.random() < param) {
+              edges.push({ from: i, to: j });
+            }
+          }
+        }
+      } else {
+        const result = generateBarabasiGraph(n, parseInt(param));
+        nodes = result.nodes;
+        edges = result.edges;
+      }
+
+      const container = document.getElementById("mynetwork");
+      const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
+      const options = {
+        physics: { enabled: true },
+        layout: { improvedLayout: true },
+        nodes: {
+          shape: "ellipse",
+          font: {
+            size: 16,
+            face: 'Times New Roman'
+          }
+        }
+      };
+
+      new vis.Network(container, data, options);
+    }
+
+    generateGraph();
+  </script>
+</body>
+</html>
