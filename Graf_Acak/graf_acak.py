@@ -42,7 +42,7 @@ net.force_atlas_2based()  # Gaya seperti karet
 
 # Simpan HTML ke path yang aman di Streamlit Cloud
 html_path = "/tmp/graph.html"
-net.show(html_path)
+net.write_html(html_path)  # <- GANTI net.show(...) ke write_html!
 
 # Baca ulang isi file HTML dan tampilkan
 with open(html_path, 'r', encoding='utf-8') as f:
