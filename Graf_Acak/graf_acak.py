@@ -36,12 +36,12 @@ st.set_page_config(page_title="Graf Acak Interaktif", layout="centered")
 with st.sidebar:
     st.header("Pengaturan Model Graf")
     model = st.selectbox("Pilih Model Graf", ["Erdős–Rényi", "Barabási–Albert"])
-    n = st.slider("Jumlah Simpul (n)", 5, 50, 20)
+    n = st.slider("Orde ($n$)", 5, 50, 20)
 
     if model == "Erdős–Rényi":
-        p = st.slider("Probabilitas Sisi (p)", 0.0, 1.0, 0.2, step=0.01)
+        p = st.slider("Probabilitas Sisi ($p$)", 0.0, 1.0, 0.2, step=0.01)
     else:
-        m = st.slider("Jumlah Sisi per Simpul Baru (m)", 1, min(n - 1, 10), 2)
+        m = st.slider("Banyaknya sisi tiap titik baru ($m$)", 1, min(n - 1, 10), 2)
 
     layout_method = st.selectbox(
         "Pilih Layout Graf",
@@ -76,8 +76,8 @@ if st.session_state.generate_graf:
     <hr>
     <h4>📊 Statistik Graf</h4>
     <ol style='padding-left: 1.2em; margin-top: 0em;'>
-      <li>Jumlah simpul: <b>{G.number_of_nodes()}</b></li>
-      <li>Jumlah sisi: <b>{G.number_of_edges()}</b></li>
+      <li>Orde: <b>{G.number_of_nodes()}</b></li>
+      <li>Ukuran: <b>{G.number_of_edges()}</b></li>
       <li>Rata-rata derajat: <b>{sum(deg)/len(deg):.2f}</b></li>
       <li>Komponen terhubung: <b>{1 if nx.is_connected(G) else nx.number_connected_components(G)}</b></li>
     </ol>

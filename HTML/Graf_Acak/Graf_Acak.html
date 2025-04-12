@@ -38,7 +38,7 @@
       </select>
     </label>
 
-    <label>Jumlah Simpul:<br>
+    <label>Orde:<br>
       <input type="range" id="nodes" min="5" max="50" value="20">
       <span id="nodes-val">20</span>
     </label>
@@ -69,11 +69,11 @@
 
     modelSelect.onchange = () => {
       if (modelSelect.value === "erdos") {
-        paramLabel.innerHTML = `Probabilitas Sisi (p):
+        paramLabel.innerHTML = `Probabilitas sisi (p):
           <input type="range" id="param" min="0" max="1" step="0.01" value="0.2">
           <span id="param-val">0.2</span>`;
       } else {
-        paramLabel.innerHTML = `Jumlah Sisi per Node (m):<br>
+        paramLabel.innerHTML = `Banyaknya sisi tiap titik baru (m):<br>
           <input type="range" id="param" min="1" max="10" value="2">
           <span id="param-val">2</span>`;
       }
