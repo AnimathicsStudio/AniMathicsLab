@@ -3,6 +3,10 @@ import networkx as nx
 from pyvis.network import Network
 import streamlit.components.v1 as components
 
+import os
+os.makedirs("/tmp", exist_ok=True)  # <== tambahkan ini
+
+
 # --- Judul Halaman ---
 st.set_page_config(page_title="Graf Acak Interaktif", layout="centered")
 st.title("🎲 Graf Interaktif: Drag Node Bebas (Pyvis)")
