@@ -1,0 +1,171 @@
+body {
+  font-family: sans-serif;
+  display: block;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+.left-panel {
+  width: 35%;
+  padding: 1rem;
+  overflow-y: auto;
+  border-right: 1px solid #ccc;
+}
+.right-panel {
+  flex: 1;
+  padding: 1rem;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 0.5rem;
+  text-align: center;
+  border: 1px solid #ccc;
+}
+#graph {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #aaa;
+}
+
+
+.custom-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #dfe6e9;
+  background-color: #f1f2f6;
+  border-radius: 999px;
+  padding: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2d3436;
+  cursor: pointer;
+  overflow: hidden;
+  transition: background 0.2s ease, color 0.2s;
+}
+
+.custom-pill-btn:hover {
+  background-color: #e0e3e7;
+}
+
+.custom-pill-btn .icon-box {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px 0 0 999px; /* penting untuk tampilan tidak "berlubang" */
+}
+
+.custom-pill-btn .label-text {
+  padding: 0.6rem 1rem 0.6rem 0.75rem;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.custom-pill-btn i {
+  font-size: 1.2rem;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.custom-pill-btn .icon-box {
+  padding: 0.45rem 0.6rem; /* sebelumnya 0.6rem */
+}
+
+.custom-pill-btn .label-text {
+  padding: 0rem .5rem 0rem .2rem; /* top & bottom lebih kecil */
+}
+
+
+
+.custom-pill-btn.active,
+.custom-pill-btn:focus {
+  background-color: #0984e3;
+  color: white;
+}
+
+.custom-pill-btn.active .icon-box {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.container-fluid,
+.row {
+  height: 100%;
+}
+
+.left-panel {
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.right-panel {
+  height: 100vh;
+  overflow: hidden;
+}
+
+
+#link-table {
+  display: inline-table;
+  max-width: 100%;
+}
+#link-table {
+  width: fit-content;
+  font-size: 0.9rem;
+  border-collapse: collapse;
+  background-color: transparent;
+  border: none;
+}
+
+#link-table thead {
+  background-color: transparent;
+  border-bottom: 1px solid #e2e8f0;
+  color: #6c757d;
+  font-weight: 500;
+  text-align: left;
+}
+
+#link-table th,
+#link-table td {
+  padding: 0.5rem 1rem;
+  white-space: nowrap;
+  border: none;
+}
+
+#link-table tbody tr {
+  border-bottom: 1px solid #f1f3f5;
+  transition: background 0.15s ease;
+}
+
+#link-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+#link-table input[type="checkbox"] {
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+
+.left-panel {
+  max-width: 250px;
+  min-width: 220px;
+  width: 100%;
+}
+
+
+#prob-input {
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+
