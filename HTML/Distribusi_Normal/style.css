@@ -1,0 +1,57 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  height: 100vh;
+  overflow-y: scroll;
+  background-color: black;
+}
+
+#control-panel {
+  width: 320px;
+  min-width: 280px;
+  max-width: 400px;  
+  background: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid #ccc;
+  overflow-y: scroll;
+}
+
+#canvas-container {
+  flex-grow: 1;
+  background: black;
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  padding-top: 20px;
+}
+
+.btn-custom {
+  margin-bottom: 10px;
+}
+
+.icon-button {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15%;
+  font-size: 22px;
+  transition: transform 0.2s;
+  margin-right: 0px;
+}
+
+.icon-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.6);
+}
+
+
+.btn.active {
+  background-color: #0dcaf0 !important;
+  color: white !important;
+  border-color: #0dcaf0 !important;
+}
+

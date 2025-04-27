@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Animathics Lab - Graphical LP Solver</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; }
+    #controls { margin-bottom: 10px; }
+    canvas { border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <h1>🌊 Animathics Lab: Graphical LP Solver</h1>
+  <div id="controls">
+    <label>Koefisien Fungsi Tujuan (c₁,c₂): </label>
+    <input type="text" id="objective" value="3,5">
+    <br><br>
+    <label>Kendala (a₁,a₂,b), pisahkan dengan ";" : </label>
+    <input type="text" id="constraints" value="2,1,10;1,2,15">
+    <br><br>
+    <button onclick="setupConstraints()">Plot</button>
+  </div>
+  
+  <script>
+    let c = [3, 5];
+    let constraints = [];
+    let Z = 10;
+    let dragging = false;
+    let dragOffset = 0;
+
+    function setup() {
+      createCanvas(600, 600);
+      setupConstraints();
+    }
+
+    function draw() {
+      background(255);
+      drawAxes();
+      drawConstraints();
+      drawObjectiveLine();
+    }
+
+    function setupConstraints() {
+      c = document.getElementById('objective').value.split(',').map(Number);
+      let consText = document.getElementById('constraints').value;
+      constraints = consText.split(';').map(s => s.split(',').map(Number));
+      Z = 10;
+    }
+
+    function drawAxes() {
+      stroke(0);
+      line(50, height - 50, width - 50, height - 50);  // x-axis
+      line(50, height - 50, 50, 50);                    // y-axis
+
+      for (let i = 0; i <= 10; i++) {
+        let x = 50 + i * 50;
+        let y = height - 50 - i * 50;
+        noStroke();
+        fill(0);
+        textAlign(CENTER);
+        text(i, x, height - 30); // x-labels
+        text(i, 30, y + 5);       // y-labels
+
+        // grid lines
+        stroke(230);
+        line(x, height - 50, x, 50);
+        line(50, y, width - 50, y);
+      }
+    }
+
+    function drawConstraints() {
+      stroke(200, 0, 0);
+      for (let con of constraints) {
+        let [a, b, d] = con;
+        let x1 = 0;
+        let y1 = d / b;
+        let x2 = d / a;
+        let y2 = 0;
+        let sx1 = map(x1, 0, 10, 50, 550);
+        let sy1 = map(y1, 0, 10, height - 50, 50);
+        let sx2 = map(x2, 0, 10, 50, 550);
+        let sy2 = map(y2, 0, 10, height - 50, 50);
+        line(sx1, sy1, sx2, sy2);
+      }
+    }
+
+    function drawObjectiveLine() {
+      stroke(0, 0, 255);
+      strokeWeight(2);
+      let a = c[0];
+      let b = c[1];
+      let x1 = 0;
+      let y1 = Z / b;
+      let x2 = Z / a;
+      let y2 = 0;
+      let sx1 = map(x1, 0, 10, 50, 550);
+      let sy1 = map(y1, 0, 10, height - 50, 50);
+      let sx2 = map(x2, 0, 10, 50, 550);
+      let sy2 = map(y2, 0, 10, height - 50, 50);
+      line(sx1, sy1, sx2, sy2);
+
+      noStroke();
+      fill(0);
+      textAlign(LEFT);
+      text(`Z = ${Z.toFixed(2)}`, 60, 60);
+    }
+
+    function mousePressed() {
+      if (mouseX > 50 && mouseX < width - 50 && mouseY > 50 && mouseY < height - 50) {
+        dragging = true;
+        dragOffset = screenToZ(mouseX, mouseY) - Z;
+      }
+    }
+
+    function mouseDragged() {
+      if (dragging) {
+        Z = screenToZ(mouseX, mouseY) - dragOffset;
+      }
+    }
+
+    function mouseReleased() {
+      dragging = false;
+    }
+
+    function screenToZ(mx, my) {
+      let x = map(mx, 50, 550, 0, 10);
+      let y = map(my, height - 50, 50, 0, 10);
+      return c[0]*x + c[1]*y;
+    }
+  </script>
+</body>
+</html>
