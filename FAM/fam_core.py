@@ -93,7 +93,6 @@ def buat_matriks_A(dfFAM, fitur, TFNVariabel, tampilkan=True):
         AA.append([item for sublist in AAA for item in sublist])
         if tampilkan:
             Ai = np.array([[f"{x:.2f}" for x in AA[-1]]])
-            LMtx(Ai, judul=f"A_{{{i+1}}}")
 
     A = np.array(AA)
     return A
@@ -101,7 +100,6 @@ def buat_matriks_A(dfFAM, fitur, TFNVariabel, tampilkan=True):
 def buat_matriks_B_M(A, metode="SumProd"):
     baris = A.shape[0]
     B = np.eye(baris)
-    LMtx(B, baris=4, kolom=4, judul="B")
 
     M = []
     for i in range(baris):
