@@ -101,10 +101,7 @@ def buat_matriks_B_M(A, metode="SumProd"):
     baris = A.shape[0]
     B = np.eye(baris)
 
-    M = []
-    for i in range(baris):
-        M.append(SumProd(A[i].reshape(-1, 1), B[i].reshape(1, -1)))
-
+    M = [SumProd(A[i].reshape(-1, 1), B[i].reshape(1, -1)) for i in range(baris)]
     return B, M
 
 
