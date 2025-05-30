@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import sympy as sp
 from collections import defaultdict
-from IPython.display import Latex, display
 import matplotlib.pyplot as plt
 
 plt.rcParams.update({"font.family": "serif", "mathtext.fontset": "cm"})
@@ -11,42 +10,6 @@ x = sp.symbols("x")
 # =================================================================================
 # Fungsi Tampilan Matriks LaTeX
 # =================================================================================
-def LMtx(A, baris=None, kolom=None, koma=None, judul=None):
-    R, C = A.shape
-    m = R if baris is None else min(baris, R // 2)
-    n = C if kolom is None else min(kolom, C // 2)
-    full_rows = baris is None or baris * 2 >= R
-    full_cols = kolom is None or kolom * 2 >= C
-
-    def format_num(x):
-        return f"{x:.{koma}f}" if koma is not None else str(x)
-
-    def fmt(row):
-        if full_cols:
-            return " & ".join(format_num(x) for x in row)
-        return (
-            " & ".join(format_num(x) for x in row[:n])
-            + " & \\cdots & "
-            + " & ".join(format_num(x) for x in row[-n:])
-        )
-
-    rows = []
-    if full_rows:
-        rows = [fmt(row) for row in A]
-    else:
-        rows += [fmt(A[i]) for i in range(m)]
-        if not full_cols:
-            dots = " & ".join(["\\vdots"] * n + ["\\ddots"] + ["\\vdots"] * n)
-        else:
-            dots = " & ".join(["\\vdots"] * C)
-        rows.append(dots)
-        rows += [fmt(A[-i]) for i in range(m, 0, -1)]
-
-    matrix_name = f"{judul} = " if judul is not None else ""
-    latex_code = matrix_name + r"\begin{pmatrix}" + r"\\".join(rows) + r"\end{pmatrix}"
-    display(Latex(latex_code))
-
-
 def LMtx_latex_str(A, baris=None, kolom=None, koma=None, judul=None):
     R, C = A.shape
     m = R if baris is None else min(baris, R // 2)
