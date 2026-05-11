@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visualisasi Dijkstra - P5.js</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <script src="dijkstra.js"></script> <!-- Memanggil file eksternal dijkstra.js -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f5f5f5;
+    }
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <h1>Visualisasi Dijkstra Algoritma</h1>
+  <script>
+    // Menggunakan setup dan draw dari dijkstra.js
+    function setup() {
+      createCanvas(800, 800); // Membuat canvas dengan ukuran lebih besar
+      initializeGraph();  // Memanggil fungsi dari dijkstra.js untuk inisialisasi graf
+    }
+
+    function draw() {
+      background(255);
+      drawGraph();  // Memanggil fungsi untuk menggambar graf
+      dijkstraStep();  // Memanggil algoritma Dijkstra langkah demi langkah
+    }
+  </script>
+</body>
+</html>

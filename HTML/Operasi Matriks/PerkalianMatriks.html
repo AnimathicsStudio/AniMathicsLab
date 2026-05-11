@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perkalian Matriks</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    .matrix-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .matrix {
+      display: grid;
+      gap: 4px;
+      margin: 1rem;
+      position: relative;
+    }
+
+    .cell {
+      width: 48px;
+      height: 48px;
+      text-align: center;
+      line-height: 48px;
+      font-size: 16px;
+      z-index: 1;
+    }
+
+    #matrixC .cell {
+      border: 1px solid green;
+      border-radius: 50%;
+    }
+
+    .result-cell {
+      background-color: lightgreen;
+      border-radius: 50%;
+    }
+
+    .current-op {
+      border-radius: 50%;
+      background-color: rgba(255, 165, 0, 0.2);
+      z-index: 2;
+      margin: 0px;
+    }
+
+    .row-outline,
+    .col-outline {
+      position: absolute;
+      border: 2px solid orange;
+      border-radius: 8px;
+      pointer-events: none;
+      z-index: 0;
+      transition: all .5s ease;
+    }
+
+    #explanation {
+      margin-top: 0.5rem;
+      margin-left: calc(48px * 4 + 2rem);
+      /* kira-kira offset dari matrixC */
+      font-size: 16px;
+      font-style: italic;
+      text-align: left;
+      margin-left: 400px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .controls button {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .controls button:hover {
+      filter: brightness(1.1);
+    }
+  </style>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+</head>
+
+<body>
+  <h1>Perkalian Matriks</h1>
+  <div>
+    <div style="display: flex; justify-content: center; align-items: center;">
+      <div class="matrix-wrapper" id="matrixAWrapper">
+        <div id="rowOutline" class="row-outline"></div>
+        <div id="matrixA" class="matrix"></div>
+      </div>
+      <div style="margin: 1rem; font-size: 24px;">×</div>
+      <div class="matrix-wrapper" id="matrixBWrapper">
+        <div id="colOutline" class="col-outline"></div>
+        <div id="matrixB" class="matrix"></div>
+      </div>
+      <div style="margin: 1rem; font-size: 24px;">=</div>
+      <div id="matrixC" class="matrix"></div>
+    </div>
+    <div id="explanation" style="margin-top: 0.5rem; text-align: left; min-height: 1.5em;"></div>
+    <div class="controls"
+      style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem;">
+      <button style="background-color: #3498db;" title="langkah sebelumnya" onclick="backStep()"><<</button>
+      <button style="background-color: #2ecc71;" title="langkah berikutnya" onclick="nextStep()">>></button>
+      <button style="background-color: #e67e22;" title="mulai ulang" onclick="reset()">Reset</button>
+    </div>
+  </div>
+
+  <script>
+    const matrixA = [[1, 2], [3, 4], [5, 6]];
+    const matrixB = [[7, 8, 9], [10, 11, 12]];
+    let matrixC, matrixCDisplay;
+    let step = 0;
+    let steps = [];
+
+    function prepareSteps() {
+      steps = [];
+      for (let i = 0; i < matrixA.length; i++) {
+        for (let j = 0; j < matrixB[0].length; j++) {
+          for (let k = 0; k < matrixA[0].length; k++) {
+            steps.push({ i, j, k });
+          }
+        }
+      }
+    }
+
+    function drawMatrix(container, matrix, highlight = {}, matrixId = '', displayMatrix = null) {
+      container.innerHTML = '';
+      const rows = matrix.length;
+      const cols = matrix[0].length;
+      container.style.gridTemplateColumns = `repeat(${cols}, 48px)`;
+      for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+          const div = document.createElement('div');
+          div.className = 'cell';
+          div.textContent = displayMatrix ? displayMatrix[i][j] : matrix[i][j];
+
+          const isCurrent = (matrixId === 'A' && i === highlight.i && j === highlight.k) ||
+            (matrixId === 'B' && i === highlight.k && j === highlight.j);
+
+          if (isCurrent) div.classList.add('current-op');
+          if (matrixId === 'C' && i === highlight.i && j === highlight.j) div.classList.add('result-cell');
+
+          container.appendChild(div);
+        }
+      }
+    }
+
+    function drawOutlines(i, j) {
+      const aCols = matrixA[0].length;
+      const bCols = matrixB[0].length;
+      const aRowStart = document.getElementById('matrixA').children[i * aCols];
+      const bColStart = document.getElementById('matrixB').children[j];
+
+      const rowBox = document.getElementById('rowOutline');
+      const colBox = document.getElementById('colOutline');
+
+      if (aRowStart) {
+        const top = aRowStart.offsetTop;
+        const left = aRowStart.offsetLeft;
+        rowBox.style.top = `${top + 10}px`;
+        rowBox.style.left = `${left + 10}px`;
+        rowBox.style.width = `${aCols * 48 + (aCols - 1) * 4 + 10}px`;
+        rowBox.style.height = `58px`;
+      }
+
+      if (bColStart) {
+        const top = bColStart.offsetTop;
+        const left = bColStart.offsetLeft;
+        colBox.style.top = `${top + 10}px`;
+        colBox.style.left = `${left + 10}px`;
+        colBox.style.width = `58px`;
+        colBox.style.height = `${matrixB.length * 48 + (matrixB.length - 1) * 4 + 15}px`;
+      }
+      rowBox.style.display = 'block';
+      colBox.style.display = 'block';
+    }
+
+    function updateExplanation(i, j) {
+      let terms = [];
+      for (let idx = 0; idx <= step; idx++) {
+        const s = steps[idx];
+        if (s && s.i === i && s.j === j) {
+          terms.push(`${matrixA[s.i][s.k]} \\times ${matrixB[s.k][s.j]}`);
+        }
+      }
+      const prefix = `C_{${i + 1},${j + 1}} = `;
+      const math = `\\(${prefix + terms.join(' + ')}\\)`;
+      const container = document.getElementById('explanation');
+      container.innerHTML = math;
+      MathJax.typesetPromise([container]);
+    }
+
+
+    function drawAll() {
+      const stepData = steps[step];
+      if (!stepData) return;
+
+      const { i, j, k } = stepData;
+
+      matrixC[i][j] += matrixA[i][k] * matrixB[k][j];
+      matrixCDisplay[i][j] = matrixC[i][j];
+
+      drawMatrix(document.getElementById('matrixA'), matrixA, { i, j, k }, 'A');
+      drawMatrix(document.getElementById('matrixB'), matrixB, { i, j, k }, 'B');
+      drawMatrix(document.getElementById('matrixC'), matrixC, { i, j }, 'C', matrixCDisplay);
+
+      updateExplanation(i, j);
+      setTimeout(() => drawOutlines(i, j), 0);
+    }
+
+    function nextStep() {
+      if (step < steps.length) {
+        drawAll();
+        step++;
+      }
+    }
+
+    function backStep() {
+      if (step > 0) {
+        step--;
+        const { i, j, k } = steps[step];
+        matrixC[i][j] -= matrixA[i][k] * matrixB[k][j];
+        matrixCDisplay[i][j] = matrixC[i][j] === 0 ? '' : matrixC[i][j];
+
+        drawMatrix(document.getElementById('matrixA'), matrixA, { i, j, k }, 'A');
+        drawMatrix(document.getElementById('matrixB'), matrixB, { i, j, k }, 'B');
+        drawMatrix(document.getElementById('matrixC'), matrixC, { i, j }, 'C', matrixCDisplay);
+
+        updateExplanation(i, j);
+        setTimeout(() => drawOutlines(i, j), 0);
+      }
+    }
+
+    function reset() {
+      step = 0;
+      matrixC = Array(matrixA.length).fill().map(() => Array(matrixB[0].length).fill(0));
+      matrixCDisplay = Array(matrixA.length).fill().map(() => Array(matrixB[0].length).fill(""));
+      drawMatrix(document.getElementById('matrixA'), matrixA, {}, 'A');
+      drawMatrix(document.getElementById('matrixB'), matrixB, {}, 'B');
+      drawMatrix(document.getElementById('matrixC'), matrixC, {}, 'C', matrixCDisplay);
+
+      const rowBox = document.getElementById('rowOutline');
+      const colBox = document.getElementById('colOutline');
+      rowBox.style.width = '0';
+      rowBox.style.height = '0';
+      colBox.style.width = '0';
+      colBox.style.height = '0';
+      rowBox.style.display = 'none';
+      colBox.style.display = 'none';
+      document.getElementById('explanation').textContent = '';
+    }
+
+    prepareSteps();
+    reset();
+  </script>
+</body>
+
+</html>
