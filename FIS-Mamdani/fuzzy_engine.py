@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import numpy as np
 import random
 
@@ -773,6 +772,4 @@ def explanation_for_challenge(result, user_answer=None):
             f"Prediksi Anda adalah {user_answer}, sedangkan kategori hasil sistem adalah "
             f"{system_label}."
         )
-
->>>>>>> 762455904148c4d3dd7bf787d54c60ec1355ae1d
     return f"{pembuka} {narrative}"

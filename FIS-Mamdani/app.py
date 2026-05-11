@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import streamlit as st
 import streamlit.components.v1 as components
 import pandas as pd
@@ -1698,5 +1697,4 @@ with tab_quiz:
     else:
         st.warning(
             "Tebak dulu hasilnya, lalu klik tombol untuk melihat jawaban sistem Mamdani."
->>>>>>> 762455904148c4d3dd7bf787d54c60ec1355ae1d
         )

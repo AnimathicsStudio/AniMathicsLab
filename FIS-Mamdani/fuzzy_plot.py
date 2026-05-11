@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -272,5 +271,4 @@ def plot_aggregation(result):
     ax.legend()
     beautify(ax)
 
->>>>>>> 762455904148c4d3dd7bf787d54c60ec1355ae1d
     return fig
