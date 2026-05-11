@@ -1695,6 +1695,5 @@ with tab_quiz:
         st.pyplot(plot_aggregation(challenge_result), use_container_width=True)
 
     else:
-        st.warning(
-            "Tebak dulu hasilnya, lalu klik tombol untuk melihat jawaban sistem Mamdani."
-        )
+        st.warning("Tebak dulu hasilnya, lalu klik tombol untuk melihat jawaban sistem Mamdani.")
+        
