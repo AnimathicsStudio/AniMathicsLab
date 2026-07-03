@@ -26,7 +26,7 @@ if uploaded_file:
         for key in ["show_A", "show_B", "show_M", "show_HasilFAM", "show_plot_TFN"]:
             if key not in st.session_state:
                 st.session_state[key] = False
-        
+
         st.sidebar.title("Visualisasi Variabel")
         if st.sidebar.button("📈 Plot TFN", use_container_width=True):
             st.session_state.show_plot_TFN = True
@@ -55,7 +55,7 @@ if uploaded_file:
             norma_s_choice = st.sidebar.selectbox("Pilih S-norm (Operator OR)", [
                 "Maximum", "Probabilistic Sum", "Lukasiewicz", "Einstein", "Hamacher"
             ])
-            
+
         if st.sidebar.button("🚀 Hitung Prediksi", use_container_width=True):
             st.session_state.show_HasilFAM = True
 

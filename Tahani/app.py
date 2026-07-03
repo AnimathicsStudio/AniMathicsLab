@@ -173,22 +173,20 @@ def membership_plot_data(df: pd.DataFrame, feature: str, fuzzy_sets: dict) -> pd
     return pd.DataFrame(rows)
 
 
-def format_number_id(value: object) -> object:
+def format_number_id(value: object) -> str:
     if pd.isna(value) or not isinstance(value, (int, float)):
-        return value
+        return ""
     if abs(value) >= 1000:
         if float(value).is_integer():
             return f"{int(value):,}".replace(",", ".")
         whole, decimal = f"{value:,.2f}".split(".")
         return f"{whole.replace(',', '.')},{decimal}"
-    return value
+    return f"{value:g}"
 
 
-def display_table(df: pd.DataFrame) -> pd.DataFrame:
-    view = df.copy()
-    for column in view.select_dtypes(include="number").columns:
-        view[column] = view[column].map(format_number_id)
-    return view
+def display_table(df: pd.DataFrame) -> pd.io.formats.style.Styler:
+    formatters = {column: format_number_id for column in df.select_dtypes(include="number").columns}
+    return df.style.format(formatters)
 
 
 def membership_figure(df: pd.DataFrame, feature: str, fuzzy_sets: dict) -> go.Figure:
