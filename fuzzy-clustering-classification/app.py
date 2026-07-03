@@ -56,17 +56,38 @@ def format_number_id(value: object) -> str:
     return f"{value:g}"
 
 
-def display_table(df: pd.DataFrame) -> pd.io.formats.style.Styler:
-    formatters = {column: format_number_id for column in df.select_dtypes(include="number").columns}
-    return df.style.format(formatters)
+def display_table(df: pd.DataFrame) -> pd.DataFrame:
+    return df
+
+
+def number_column_config(df: pd.DataFrame) -> dict:
+    return {
+        column: st.column_config.NumberColumn(format="%.4g")
+        for column in df.select_dtypes(include="number").columns
+    }
+
+
+def show_table(df: pd.DataFrame, **kwargs) -> None:
+    st.dataframe(
+        display_table(df),
+        column_config=number_column_config(df),
+        **kwargs,
+    )
 
 
 def local_css() -> None:
     st.markdown(
         """
         <style>
-        .block-container { max-width: 1180px; padding-top: 1.25rem; }
-        div[data-testid="stMetricValue"] { font-size: 1.25rem; }
+        .block-container { max-width: 1180px; padding-top: 1.05rem; }
+        h1 { font-size: 2rem !important; line-height: 1.16 !important; margin-bottom: 0.25rem !important; }
+        h2 { font-size: 1.35rem !important; margin-top: 0.6rem !important; }
+        h3 { font-size: 1.05rem !important; margin-top: 0.45rem !important; }
+        p, li, label, .stMarkdown, .stCaption { font-size: 0.92rem !important; line-height: 1.35 !important; }
+        div[data-testid="stMetricValue"] { font-size: 1.15rem; }
+        div[data-testid="stDataFrame"] { font-size: 0.86rem; }
+        div[data-testid="stSidebar"] { font-size: 0.9rem; }
+        div[data-testid="stSidebar"] h2, div[data-testid="stSidebar"] h3 { font-size: 1rem !important; }
         .note-box {
             border: 1px solid rgba(128, 128, 128, 0.28);
             border-radius: 8px;
@@ -130,10 +151,10 @@ tab_input, tab_process, tab_result, tab_classification = st.tabs(
 with tab_input:
     st.subheader("Dataset")
     st.caption("Dataset bawaan adalah contoh segmentasi pelanggan. Upload CSV dapat dipakai untuk kasus lain.")
-    st.dataframe(display_table(df), use_container_width=True, hide_index=True)
+    show_table(df, width="stretch", hide_index=True)
 
     st.subheader("Fitur Terpilih")
-    st.dataframe(display_table(df[features].describe().T.reset_index().rename(columns={"index": "fitur"})), use_container_width=True, hide_index=True)
+    show_table(df[features].describe().T.reset_index().rename(columns={"index": "fitur"}), width="stretch", hide_index=True)
 
 with tab_process:
     st.subheader("Proses Fuzzy C-Means")
@@ -149,10 +170,10 @@ with tab_process:
     )
 
     st.subheader("Derajat Keanggotaan")
-    st.dataframe(display_table(memberships), use_container_width=True, hide_index=True)
+    show_table(memberships, width="stretch", hide_index=True)
 
     st.subheader("Pusat Cluster")
-    st.dataframe(display_table(centers), use_container_width=True, hide_index=True)
+    show_table(centers, width="stretch", hide_index=True)
 
     st.subheader("Objektif per Iterasi")
     objective_df = pd.DataFrame(
@@ -166,7 +187,7 @@ with tab_process:
         dragmode=False,
         margin=dict(l=10, r=10, t=20, b=10),
     )
-    st.plotly_chart(fig, use_container_width=True, config=PLOTLY_CONFIG)
+    st.plotly_chart(fig, width="stretch", config=PLOTLY_CONFIG)
 
 with tab_result:
     st.subheader("Hasil dan Visualisasi")
@@ -181,7 +202,7 @@ with tab_result:
         st.metric("Iterasi", str(fcm["iterations"]))
 
     st.subheader("Profil Cluster")
-    st.dataframe(display_table(profiles), use_container_width=True, hide_index=True)
+    show_table(profiles, width="stretch", hide_index=True)
 
     st.subheader("Scatter Plot Cluster")
     x_axis = st.selectbox("Sumbu X", features, index=0)
@@ -207,7 +228,7 @@ with tab_result:
         dragmode=False,
         margin=dict(l=10, r=10, t=20, b=10),
     )
-    st.plotly_chart(fig, use_container_width=True, config=PLOTLY_CONFIG)
+    st.plotly_chart(fig, width="stretch", config=PLOTLY_CONFIG)
 
 with tab_classification:
     st.subheader("Klasifikasi Sederhana")
@@ -251,11 +272,11 @@ with tab_classification:
             "derajat_keanggotaan": new_membership.round(4),
         }
     )
-    st.dataframe(new_membership_df, use_container_width=True, hide_index=True)
+    show_table(new_membership_df, width="stretch", hide_index=True)
 
     st.subheader("Jarak ke Pusat Cluster")
     distances = []
     for _, center in centers.iterrows():
         distance = sum((float(new_row[f]) - float(center[f])) ** 2 for f in features) ** 0.5
         distances.append({"cluster": center["cluster"], "jarak": round(distance, 4)})
-    st.dataframe(pd.DataFrame(distances), use_container_width=True, hide_index=True)
+    show_table(pd.DataFrame(distances), width="stretch", hide_index=True)
