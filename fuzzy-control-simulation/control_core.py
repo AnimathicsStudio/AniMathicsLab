@@ -47,11 +47,17 @@ def mf_curve(x, mf):
     return trapmf(x, params)
 
 
+def integrate_curve(y, x):
+    if hasattr(np, "trapezoid"):
+        return np.trapezoid(y, x)
+    return np.trapz(y, x)
+
+
 def centroid(x, mu):
-    area = np.trapz(mu, x)
+    area = integrate_curve(mu, x)
     if area <= 0:
         return float(np.mean(x))
-    return float(np.trapz(x * mu, x) / area)
+    return float(integrate_curve(x * mu, x) / area)
 
 
 def fan_case():
